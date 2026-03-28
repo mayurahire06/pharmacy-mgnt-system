@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -87,5 +88,35 @@ public class SaleController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bill_" + sale.getId() + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PHARMACIST')")
+    public ResponseEntity<?> getSales() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        List<Sale> sales;
+        if (isAdmin) {
+            sales = saleRepository.findAll();
+        } else {
+            sales = saleRepository.findByPharmacistId(userDetails.getId());
+        }
+
+        List<com.mh.backend.payload.response.SaleDTO> response = new ArrayList<>();
+        for (Sale sale : sales) {
+            com.mh.backend.payload.response.SaleDTO dto = new com.mh.backend.payload.response.SaleDTO();
+            dto.setId(sale.getId());
+            dto.setCustomerName(sale.getCustomerName());
+            dto.setTotalAmount(sale.getTotalAmount());
+            dto.setSaleDate(sale.getSaleDate());
+            if (sale.getPharmacist() != null) {
+                dto.setPharmacistName(sale.getPharmacist().getUsername());
+            }
+            response.add(dto);
+        }
+
+        return ResponseEntity.ok(response);
     }
 }
