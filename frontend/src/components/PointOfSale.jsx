@@ -6,6 +6,7 @@ const PointOfSale = () => {
   const [cart, setCart] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchMedicines();
@@ -80,11 +81,20 @@ const PointOfSale = () => {
   };
 
   const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const filteredMedicines = medicines.filter(m => m.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
       <div className="glass-panel animate-fade-in" style={{ padding: '2rem' }}>
         <h2 style={{ marginBottom: '1.5rem' }}>Available Medicines</h2>
+        <input 
+          type="text" 
+          placeholder="Search medicines by name..." 
+          className="form-control" 
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{ marginBottom: '1.5rem', width: '100%' }}
+        />
         <table className="glass-table">
           <thead>
             <tr>
@@ -95,7 +105,7 @@ const PointOfSale = () => {
             </tr>
           </thead>
           <tbody>
-            {medicines.map(m => (
+            {filteredMedicines.map(m => (
               <tr key={m.id}>
                 <td>{m.name}</td>
                 <td>${m.price}</td>
