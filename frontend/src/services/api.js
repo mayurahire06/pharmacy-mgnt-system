@@ -15,7 +15,9 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error); //it will reject the promise bbecause of error, 
+    // but instead of promise why we don't show a message? because the error will be caught by 
+    // the caller function and it will show the message.
   }
 );
 

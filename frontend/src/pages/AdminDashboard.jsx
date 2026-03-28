@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
-import { LogOut, Users, Package } from 'lucide-react';
+import { LogOut, LayoutDashboard, Package } from 'lucide-react';
 import MedicineList from '../components/MedicineList';
 import SupplierList from '../components/SupplierList';
+import Reports from '../components/Reports';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -23,8 +24,9 @@ const AdminDashboard = () => {
           <Package /> Admin Hub
         </h2>
         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <li><button className={`btn-secondary ${activeTab === 'medicines' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'medicines' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('medicines')}>Manage Medicines</button></li>
-          <li><button className={`btn-secondary ${activeTab === 'suppliers' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'suppliers' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('suppliers')}>Manage Suppliers</button></li>
+          <li><button className={`btn-secondary ${activeTab === 'medicines' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'medicines' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('medicines')}>Medicines</button></li>
+          <li><button className={`btn-secondary ${activeTab === 'suppliers' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'suppliers' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('suppliers')}>Suppliers</button></li>
+          <li><button className={`btn-secondary ${activeTab === 'reports' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'reports' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('reports')}>Sales Reports</button></li>
         </ul>
         <button 
           className="btn-danger" 
@@ -36,10 +38,13 @@ const AdminDashboard = () => {
       </div>
       <div className="main-content">
         <div className="page-header">
-          <h1>{activeTab === 'medicines' ? 'Medicines Operations' : 'Suppliers Management'}</h1>
+          <h1>{activeTab === 'medicines' ? 'Medicines Operations' : activeTab === 'suppliers' ? 'Suppliers Management' : 'Sales Reports'}</h1>
         </div>
-        {activeTab === 'medicines' && <MedicineList />}
-        {activeTab === 'suppliers' && <SupplierList />}
+        <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+          {activeTab === 'medicines' && <MedicineList />}
+          {activeTab === 'suppliers' && <SupplierList />}
+          {activeTab === 'reports' && <Reports />}
+        </div>
       </div>
     </div>
   );

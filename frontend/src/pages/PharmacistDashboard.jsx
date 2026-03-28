@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
-import { LogOut, Activity } from 'lucide-react';
+import { LogOut, Pill } from 'lucide-react';
 import PointOfSale from '../components/PointOfSale';
+import Reports from '../components/Reports';
 
 const PharmacistDashboard = () => {
   const dispatch = useDispatch();
@@ -19,10 +20,11 @@ const PharmacistDashboard = () => {
     <div className="dashboard-layout animate-fade-in">
       <div className="sidebar">
         <h2 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Activity /> Pharma Desk
+          <Pill /> Pharma Desk
         </h2>
         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <li><button className={`btn-secondary ${activeTab === 'pos' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'pos' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('pos')}>Point of Sale</button></li>
+          <li><button className={`btn-secondary ${activeTab === 'reports' ? 'active' : ''}`} style={{ width: '100%', textAlign: 'left', background: activeTab === 'reports' ? 'rgba(255,255,255,0.2)' : '' }} onClick={() => setActiveTab('reports')}>My Sales Reports</button></li>
         </ul>
         <button 
           className="btn-danger" 
@@ -34,9 +36,12 @@ const PharmacistDashboard = () => {
       </div>
       <div className="main-content">
         <div className="page-header">
-          <h1>Point of Sale & Billing</h1>
+          <h1>{activeTab === 'pos' ? 'Point of Sale & Billing' : 'My Sales Reports'}</h1>
         </div>
-        {activeTab === 'pos' && <PointOfSale />}
+        <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+          {activeTab === 'pos' && <PointOfSale />}
+          {activeTab === 'reports' && <Reports />}
+        </div>
       </div>
     </div>
   );
